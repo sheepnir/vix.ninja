@@ -398,52 +398,35 @@ npm create vite@latest . -- --template react-ts
 npm install
 ```
 
-### Set Up Tailwind CSS Manually
+### Fix PostCSS Config for Tailwind
 
-Since you're encountering issues with the Tailwind initialization commands, let's set up Tailwind manually:
+You're encountering a specific error related to the nesting plugin. Let's fix your PostCSS configuration:
 
 ```zsh
-# Make sure you're in the frontend directory
-cd frontend
-
-# Create the tailwind configuration files manually
-touch tailwind.config.js
-touch postcss.config.js
+# First, install postcss-nesting explicitly
+npm install -D postcss-nesting
 ```
 
-Now, open the `tailwind.config.js` file in VSCode and add the following content:
+Now, update your `postcss.config.js` file with this specific configuration that doesn't use the './nesting' path:
 
 ```javascript
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-};
-```
-
-Next, open the `postcss.config.js` file and add:
-
-```javascript
-export default {
+// postcss.config.js
+module.exports = {
   plugins: {
+    "postcss-nesting": {},
     tailwindcss: {},
     autoprefixer: {},
   },
 };
 ```
 
-Finally, add Tailwind directives to `src/index.css`:
+This configuration uses the explicit `postcss-nesting` plugin rather than trying to reference the nesting module from within the tailwindcss package, which is causing the error.
 
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+After saving this change, restart your development server:
+
+```zsh
+npm run dev
 ```
-
-This manual approach bypasses the initialization tools entirely and should work as long as you have the packages installed (which you confirmed are installed).
 
 ### Install Additional Frontend Dependencies
 
@@ -652,15 +635,60 @@ python run.py
 
 The Flask backend should start and be accessible at `http://localhost:5000`.
 
-### Start the Frontend
+### Running the Frontend
+
+First, make sure you're in the correct directory:
 
 ```zsh
-# From the project root directory
+# Navigate to the frontend directory specifically
 cd frontend
-npm start
+
+# Check what scripts are available in your package.json
+npm run
 ```
 
-The React frontend should start and be accessible at `http://localhost:3000`.
+You'll see a list of available scripts. Look for something like:
+
+- `dev`
+- `start`
+- `serve`
+
+Then run the appropriate command:
+
+```zsh
+# If 'dev' script exists
+npm run dev
+
+# If 'start' script exists
+npm start
+
+# If neither exists, you may need to initialize your package.json properly
+```
+
+If your package.json doesn't have the appropriate scripts, you need to initialize your frontend properly with Vite:
+
+```zsh
+# Make sure you're in the frontend directory
+cd frontend
+
+# Create a new Vite project (this will scaffold the proper scripts)
+npm create vite@latest . -- --template react-ts
+
+# After the scaffolding is complete, install dependencies
+npm install
+
+# Then install Tailwind and other dependencies
+npm install -D tailwindcss postcss autoprefixer
+npm install axios react-router-dom d3 @types/d3 recharts
+
+# Initialize Tailwind
+npx tailwindcss init -p
+
+# Now try running the dev server
+npm run dev
+```
+
+When the development server starts, it will typically be accessible at http://localhost:5173.
 
 ## Next Steps
 

@@ -16,5 +16,15 @@
     },
     "[typescriptreact]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
+    },
+
+      "css.validate": false,
+      "tailwindCSS.includeLanguages": {
+        "typescript": "javascript",
+        "typescriptreact": "javascript"
+      },
+      "editor.quickSuggestions": {
+        "strings": true
+      }
+    
   }
