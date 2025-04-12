@@ -379,35 +379,44 @@ if __name__ == '__main__':
 
 ## Frontend Environment Setup
 
-### Initialize React App with TypeScript
+### Initialize React Frontend with TypeScript
 
-Navigate to the frontend directory and create a new React app with TypeScript:
+As you noticed, Create React App is now deprecated according to the official warning message. The React team now recommends using newer frameworks like Vite. Let's set up your frontend using Vite:
 
 ```zsh
+# Make sure you're in the frontend directory
 cd frontend
-npx create-react-app . --template typescript
+
+# If there are existing files, you might want to move them or remove them
+# Only if you don't need the existing files:
+rm -rf src/
+
+# Initialize a new Vite project with React and TypeScript
+npm create vite@latest . -- --template react-ts
+
+# Install dependencies
+npm install
 ```
 
-### Install Additional Frontend Dependencies
+### Set Up Tailwind CSS Manually
+
+Since you're encountering issues with the Tailwind initialization commands, let's set up Tailwind manually:
 
 ```zsh
-npm install axios react-router-dom @types/react-router-dom d3 @types/d3 recharts
-npm install tailwindcss postcss autoprefixer --save-dev
+# Make sure you're in the frontend directory
+cd frontend
+
+# Create the tailwind configuration files manually
+touch tailwind.config.js
+touch postcss.config.js
 ```
 
-### Configure Tailwind CSS
-
-Initialize Tailwind CSS:
-
-```zsh
-npx tailwindcss init -p
-```
-
-Update `tailwind.config.js`:
+Now, open the `tailwind.config.js` file in VSCode and add the following content:
 
 ```javascript
-module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {},
   },
@@ -415,12 +424,32 @@ module.exports = {
 };
 ```
 
-Add Tailwind directives to `src/index.css`:
+Next, open the `postcss.config.js` file and add:
+
+```javascript
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};
+```
+
+Finally, add Tailwind directives to `src/index.css`:
 
 ```css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+```
+
+This manual approach bypasses the initialization tools entirely and should work as long as you have the packages installed (which you confirmed are installed).
+
+### Install Additional Frontend Dependencies
+
+```zsh
+# Install additional frontend dependencies
+npm install axios react-router-dom d3 @types/d3 recharts
 ```
 
 ## Database Setup
