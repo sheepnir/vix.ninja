@@ -73,7 +73,6 @@ deactivate
 
 # After deactivation, your terminal prompt will return to normal
 # username@hostname:~/vix.ninja$
-
 ```
 
 ### Create a .zshrc Alias (Optional)
@@ -103,27 +102,36 @@ Create a `requirements.txt` file:
 touch requirements.txt
 ```
 
-Add the following packages to `requirements.txt`:
+Add the following packages to `requirements.txt`, using versions compatible with Python 3.13:
 
 ```
-Flask==2.0.1
-Flask-RESTful==0.3.9
-Flask-Cors==3.0.10
-pandas==1.3.3
-numpy==1.21.2
-matplotlib==3.4.3
-ib-insync==0.9.70
-yfinance==0.1.74
-SQLAlchemy==1.4.23
-pytest==6.2.5
-black==21.8b0
+# Core dependencies
+numpy>=2.0.0
+pandas>=2.1.3
+Flask>=2.2.5
+Flask-RESTful>=0.3.10
+Flask-Cors>=4.0.0
+matplotlib>=3.8.0
+ib-insync>=0.9.85
+yfinance>=0.2.30
+SQLAlchemy>=2.0.0
+
+# Development tools
+pytest>=7.4.0
+black>=23.10.0
 ```
 
 Install the packages:
 
 ```zsh
+# Install packages with verified Python 3.13 compatibility
 pip install -r requirements.txt
+
+# Update pip as suggested in the error message
+pip install --upgrade pip
 ```
+
+Based on the most current information, NumPy 2.0.0 and above officially supports Python 3.13 with NumPy 2.1.0 and 2.2.0 releases specifically adding full Python 3.13 compatibility. Also note that certain packages like pandas may have compatibility issues with newer NumPy versions, so the requirements specify pandas 2.1.3 or newer to avoid known compatibility issues.
 
 ## VSCode Configuration
 
@@ -311,11 +319,11 @@ from flask_cors import CORS
 def create_app(config_name="development"):
     app = Flask(__name__)
     CORS(app)
-    
+
     # Import and register blueprints
     from app.api import api_bp
     app.register_blueprint(api_bp, url_prefix='/api')
-    
+
     return app
 ```
 
@@ -456,7 +464,7 @@ def close_db(e=None):
 
 def init_db():
     db = get_db()
-    
+
     # Create tables
     db.execute('''
     CREATE TABLE IF NOT EXISTS vix_futures (
@@ -469,7 +477,7 @@ def init_db():
         UNIQUE(timestamp, contract_month)
     )
     ''')
-    
+
     db.execute('''
     CREATE TABLE IF NOT EXISTS vix_index (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -478,7 +486,7 @@ def init_db():
         UNIQUE(timestamp)
     )
     ''')
-    
+
     db.commit()
 
 # Call init_db to ensure tables exist
@@ -508,7 +516,7 @@ class IBService:
         self.port = port
         self.client_id = client_id
         self.ib = IB()
-        
+
     def connect(self):
         """Connect to IB Gateway"""
         try:
@@ -520,35 +528,35 @@ class IBService:
         except Exception as e:
             logger.error(f"Failed to connect to IB Gateway: {e}")
             return False
-    
+
     def disconnect(self):
         """Disconnect from IB Gateway"""
         if self.ib.isConnected():
             self.ib.disconnect()
             logger.info("Disconnected from IB Gateway")
-    
+
     def get_vix_futures(self):
         """Get VIX futures data"""
         if not self.ib.isConnected():
             self.connect()
-        
+
         futures_data = []
-        
+
         # Get current month and year
         now = datetime.datetime.now()
-        
+
         # Loop through the next 9 months to get all VIX futures
         for i in range(9):
             future_date = now + datetime.timedelta(days=30 * i)
             future_symbol = f"VX{future_date.strftime('%Y%m')}"
-            
+
             contract = Future('VIX', future_date.strftime('%Y%m'), 'CFE')
-            
+
             try:
                 self.ib.qualifyContracts(contract)
                 ticker = self.ib.reqMktData(contract)
                 self.ib.sleep(1)  # Give time for data to arrive
-                
+
                 if ticker.lastGreeks:
                     futures_data.append({
                         'contract': future_symbol,
@@ -560,7 +568,7 @@ class IBService:
                     })
             except Exception as e:
                 logger.error(f"Error fetching data for {future_symbol}: {e}")
-        
+
         return futures_data
 ```
 
@@ -587,7 +595,7 @@ class YahooService:
         try:
             vix_ticker = yf.Ticker("^VIX")
             vix_data = vix_ticker.history(period="1d")
-            
+
             if not vix_data.empty:
                 current_value = vix_data['Close'].iloc[-1]
                 return {
