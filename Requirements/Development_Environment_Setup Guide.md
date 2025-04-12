@@ -1,6 +1,6 @@
-# VIX Futures Visualization - Development Environment Setup Guide
+# VIX.Ninja - Development Environment Setup Guide
 
-This guide will walk you through setting up your development environment for the VIX futures term structure visualization project on macOS using zsh, VSCode, and Python virtual environments.
+This guide will walk you through setting up your development environment for the VIX.Ninja project on macOS using zsh, VSCode, and Python virtual environments.
 
 ## Table of Contents
 
@@ -48,8 +48,8 @@ brew install --cask visual-studio-code
 
 ```zsh
 # Create a directory for your project
-mkdir vix-futures-viz
-cd vix-futures-viz
+mkdir vix.ninja
+cd vix.ninja
 
 # Initialize git repository
 git init
@@ -65,7 +65,7 @@ python3 -m venv venv
 source venv/bin/activate
 
 # Your terminal prompt should change to indicate the active environment
-# (venv) username@hostname:~/vix-futures-viz$
+# (venv) username@hostname:~/vix.ninja$
 ```
 
 ### Create a .zshrc Alias (Optional)
@@ -77,7 +77,7 @@ For convenience, you can add an alias to your `.zshrc` file to activate the virt
 nano ~/.zshrc
 
 # Add the following line
-alias venv-vix="source ~/vix-futures-viz/venv/bin/activate"
+alias venv-vix="source ~/vix.ninja/venv/bin/activate"
 
 # Save and exit (Ctrl+O, Enter, Ctrl+X)
 
@@ -430,7 +430,7 @@ import sqlite3
 import os
 from flask import g
 
-DATABASE_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'instance', 'vix_data.sqlite')
+DATABASE_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'instance', 'vix_ninja.sqlite')
 
 def get_db():
     if 'db' not in g:
