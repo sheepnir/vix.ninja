@@ -66,6 +66,14 @@ source venv/bin/activate
 
 # Your terminal prompt should change to indicate the active environment
 # (venv) username@hostname:~/vix.ninja$
+
+# To deactivate the virtual environment when working on other projects
+# Simply run:
+deactivate
+
+# After deactivation, your terminal prompt will return to normal
+# username@hostname:~/vix.ninja$
+
 ```
 
 ### Create a .zshrc Alias (Optional)
